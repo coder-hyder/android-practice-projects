@@ -23,3 +23,4 @@ rootProject.name = "Android(Practice Projects"
 include(":app")
 include(":contact_app")
 include(":navigation3")
+
