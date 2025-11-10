@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.newsapp.presentation.screens.NewsScreen
 import com.example.newsapp.presentation.viewmodel.NewsViewModel
 import com.example.newsapp.ui.theme.AndroidPracticeProjectsTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,28 +36,13 @@ class MainActivity : ComponentActivity() {
         setContent {
                 AndroidPracticeProjectsTheme {
                     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                        News()
+                        val viewmodel : NewsViewModel = hiltViewModel()
+                        val state = viewmodel.state.collectAsState()
+                        NewsScreen(
+                            state = state.value,
+                            viewmodel::onEvent
+                        )
                     }
-            }
-        }
-    }
-}
-@Composable
-fun News(viewModel: NewsViewModel = hiltViewModel()) {
-    val state by viewModel.news.collectAsState()
-
-    LaunchedEffect(state) {
-        Log.d("NewsApi", "News updated: count=${state.size}")
-    }
-
-    if (state.isEmpty()) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    } else {
-        LazyColumn {
-            items(state) { article ->
-                Text(article.title ?: "No Title", Modifier.padding(8.dp))
             }
         }
     }
