@@ -78,6 +78,10 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.2")
 
 
+    // theme
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+
+
 
 
 }
