@@ -43,9 +43,9 @@ class NewsViewModel @Inject constructor(private val repo: Repo) : ViewModel(){
         viewModelScope.launch {
             repo.getTopHeadlines(category = category).collect { state ->
                 when(state){
-                    is ResultState.Error -> _state.value = NewsScreenState(error = state.error)
+                    is ResultState.Error -> _state.value = NewsScreenState(error = state.error, isLoading = false, article = emptyList())
                     ResultState.Loading -> _state.value = NewsScreenState(isLoading = true)
-                    is ResultState.Success -> _state.value = NewsScreenState(article = state.data, isLoading = false)
+                    is ResultState.Success -> _state.value = NewsScreenState(article = state.data, isLoading = false, error = null)
                 }
             }
         }
