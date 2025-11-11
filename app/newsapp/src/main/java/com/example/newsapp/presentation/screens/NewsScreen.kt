@@ -30,6 +30,7 @@ import com.example.newsapp.domain.model.Article
 import com.example.newsapp.presentation.component.CategoryTabRow
 import com.example.newsapp.presentation.component.NewsArticleCard
 import com.example.newsapp.presentation.component.NewsScreenTopBar
+import com.example.newsapp.presentation.component.RetryContent
 import com.example.newsapp.presentation.viewmodel.NewsViewModel
 import kotlinx.coroutines.launch
 
@@ -88,7 +89,10 @@ fun NewsScreen(
             ) {
                 NewsArticleList(
                     state = state,
-                    onCardClicked = {}
+                    onCardClicked = {},
+                    onRetry = {
+                        onEvent(NewsScreenEvent.OnCategoryChanged(state.category))
+                    }
                 )
             }
         }
@@ -103,7 +107,8 @@ fun NewsScreen(
 fun NewsArticleList(
     modifier : Modifier = Modifier,
     state: NewsScreenState,
-    onCardClicked:(Article)->Unit
+    onCardClicked:(Article)->Unit,
+    onRetry:() -> Unit
 ) {
     when{
         state.isLoading -> {
@@ -113,19 +118,25 @@ fun NewsArticleList(
             }
         }
 
-        state.article !=null ->{
+        state.article.isNotEmpty() ->{
             LazyColumn(contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 items(state.article){article ->
 
                     NewsArticleCard(
                         modifier = Modifier,
-                        onCardClicked = {},
-                        article = article
+                        onCardClicked = onCardClicked,
+                        article = article!!
                     )
 
                 }
             }
+        }
+        state.error !=null ->{
+            RetryContent(
+                onRetry = onRetry,
+                error = state.error
+            )
         }
     }
 
